@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Page</title>
+    <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+    <header class="site-header">
+        <h1>Welcome to the login page</h1>
+    </header>
+
+    <div class="login-container">
+        <div class="error-message" hidden>
+            Error: <span id="error-message-text">password or username is incorrect</span>
+        </div>
+        <h2>🔒Login</h2>
+        <form action="/login" method="post">
+            <div class="input-group">
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="username" required>
+            </div>
+            <div class="input-group">
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" required>
+                <label class="show-password-label">
+                    <input type="checkbox" id="show-password"> Show Password
+                </label>
+            </div>
+            <!-- Custom CAPTCHA -->
+            <div class="input-group">
+                <label for="captcha">Enter the code: <span id="captcha-text"></span></label>
+                <input type="text" id="captcha" name="captcha" required>
+                <input type="hidden" id="captcha-value" name="captcha-value">
+            </div>
+            <hr>
+            <div class="btn-group">
+                <button type="submit" class="login-btn">Log In</button>
+                <button type="reset" class="clear-btn">Clear</button>
+                <a href="/signup"><button type="button" class="signup-btn">Sign Up</button></a>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        // Generate a random CAPTCHA code
+        function generateCaptcha() {
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+            let captcha = '';
+            for (let i = 0; i < 6; i++) {
+                captcha += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            return captcha;
+        }
+
+        // Display CAPTCHA and store the value
+        const captchaText = document.getElementById('captcha-text');
+        const captchaValue = document.getElementById('captcha-value');
+        const captcha = generateCaptcha();
+        captchaText.textContent = captcha;
+        captchaValue.value = captcha;
+
+        // Get the error from the URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const error = urlParams.get('error');
+        const message = urlParams.get('message');
+        if (error) {
+            const errorMessageText = document.getElementById('error-message-text');
+            errorMessageText.textContent = message || 'password or username is incorrect';
+            document.querySelector('.error-message').style.display = 'block';
+        }
+
+        // Show/Hide Password toggle
+        const passwordInput = document.getElementById('password');
+        const showPasswordCheckbox = document.getElementById('show-password');
+        showPasswordCheckbox.addEventListener('change', () => {
+            passwordInput.type = showPasswordCheckbox.checked ? 'text' : 'password';
+        });
+    </script>
+</body>
+</html>
